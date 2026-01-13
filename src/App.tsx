@@ -15,18 +15,23 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
+enum SortType {
+  NONE = 'none',
+  ALPHABET = 'alphabet',
+  LENGTH = 'length',
+}
+
 export const App: React.FC = () => {
-  const [alphabet, setAlphabet] = useState(false);
-  const [length, setLength] = useState(false);
+  const [sortType, setSortType] = useState<SortType>(SortType.NONE);
   const [reverse, setReverse] = useState(false);
 
   const goods = [...goodsFromServer];
 
-  if (alphabet) {
+  if (sortType === SortType.ALPHABET) {
     goods.sort((a, b) => a.localeCompare(b));
   }
 
-  if (length) {
+  if (sortType === SortType.LENGTH) {
     goods.sort((a, b) => a.length - b.length);
   }
 
@@ -39,22 +44,20 @@ export const App: React.FC = () => {
       <div className="buttons">
         <button
           type="button"
-          className={`button is-info ${alphabet ? '' : 'is-light'}`}
-          onClick={() => {
-            setAlphabet(true);
-            setLength(false);
-          }}
+          className={`button is-info ${
+            sortType === SortType.ALPHABET ? '' : 'is-light'
+          }`}
+          onClick={() => setSortType(SortType.ALPHABET)}
         >
           Sort alphabetically
         </button>
 
         <button
           type="button"
-          className={`button is-success ${length ? '' : 'is-light'}`}
-          onClick={() => {
-            setLength(true);
-            setAlphabet(false);
-          }}
+          className={`button is-success ${
+            sortType === SortType.LENGTH ? '' : 'is-light'
+          }`}
+          onClick={() => setSortType(SortType.LENGTH)}
         >
           Sort by length
         </button>
@@ -62,18 +65,17 @@ export const App: React.FC = () => {
         <button
           type="button"
           className={`button is-warning ${reverse ? '' : 'is-light'}`}
-          onClick={() => setReverse(!reverse)}
+          onClick={() => setReverse(prev => !prev)}
         >
           Reverse
         </button>
 
-        {(alphabet || length || reverse) && (
+        {(sortType !== SortType.NONE || reverse) && (
           <button
             type="button"
             className="button is-danger is-light"
             onClick={() => {
-              setAlphabet(false);
-              setLength(false);
+              setSortType(SortType.NONE);
               setReverse(false);
             }}
           >
